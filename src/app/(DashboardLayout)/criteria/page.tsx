@@ -17,6 +17,7 @@ import { AppDispatch } from "@/redux/store";
 import ModalFeedback from "@/components/modal/ModalFeedback";
 import ModalConfirm from "@/components/modal/ModalConfirm";
 import { IconTrash } from "@tabler/icons-react";
+import Paginations from "@/components/custom-table/Pagination";
 
 const Criteria = () => {
   const headCells = [
@@ -53,6 +54,9 @@ const Criteria = () => {
   const [itemIdToDelete, setItemIdToDelete] = useState("");
   const [keyword, setKeyword] = useState("");
 
+  const [page, setPage] = useState(1);
+  const [totalPage, setTotalPage] = useState(1);
+
   useEffect(() => {
     if (!isLoading) {
       dispatch(fetchCriteria({ page: 1, limit: 10 }));
@@ -62,13 +66,20 @@ const Criteria = () => {
   useEffect(() => {
     if (listCriteria) {
       setData(listCriteria?.items);
+      setTotalPage(listCriteria?.meta?.totalPages);
     }
   }, [listCriteria]);
 
   const handleKeyword = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter") {
+      setPage(1);
       dispatch(fetchCriteria({ page: 1, limit: 10, keyword: keyword }));
     }
+  };
+
+  const handleChangePage = (event: any, newPage: number) => {
+    setPage(newPage);
+    dispatch(fetchCriteria({ page: newPage, limit: 10 }));
   };
 
   const closeDrawer = () => {
@@ -89,6 +100,7 @@ const Criteria = () => {
 
   const addCriteriaSuccess = () => {
     setIsOpenModal("");
+    setPage(1);
     dispatch(fetchCriteria({ page: 1, limit: 10 }));
   };
 
@@ -123,6 +135,7 @@ const Criteria = () => {
 
   const removeCriteriaSuccess = () => {
     setIsOpenModal("");
+    setPage(1);
     dispatch(fetchCriteria({ page: 1, limit: 10 }));
   };
 
@@ -174,6 +187,13 @@ const Criteria = () => {
               includeDetail={false}
               onDelete={handleDeleteCriteria}
             />
+            {data?.length >= 1 && (
+              <Paginations
+                count={totalPage}
+                page={page}
+                handleChange={handleChangePage}
+              />
+            )}
           </Box>
           <DrawerCriteria
             isOpen={isOpenDrawer}

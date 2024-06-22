@@ -1,45 +1,57 @@
-'use client'
-import { Grid, Box } from '@mui/material';
-import PageContainer from '@/app/(DashboardLayout)/components/container/PageContainer';
-// components
-import SalesOverview from '@/app/(DashboardLayout)/components/dashboard/SalesOverview';
-import YearlyBreakup from '@/app/(DashboardLayout)/components/dashboard/YearlyBreakup';
-import RecentTransactions from '@/app/(DashboardLayout)/components/dashboard/RecentTransactions';
-import ProductPerformance from '@/app/(DashboardLayout)/components/dashboard/ProductPerformance';
-import Blog from '@/app/(DashboardLayout)/components/dashboard/Blog';
-import MonthlyEarnings from '@/app/(DashboardLayout)/components/dashboard/MonthlyEarnings';
+"use client";
+import { Grid, Box, Typography } from "@mui/material";
+import PageContainer from "@/app/(DashboardLayout)/components/container/PageContainer";
+
+import EmployeeImage from "../../../public/images/backgrounds/division.png";
+import Image from "next/image";
 
 const Dashboard = () => {
   return (
     <PageContainer title="Dashboard" description="this is Dashboard">
-      <Box>
-        <Grid container spacing={3}>
-          <Grid item xs={12} lg={8}>
-            <SalesOverview />
+      <Box
+        minHeight={"70vh"}
+        display={"flex"}
+        alignItems={"center"}
+        justifyContent={"center"}
+        flexDirection={{ xs: "column", lg: "row" }}
+      >
+        <Grid
+          container
+          spacing={2}
+          justifyContent={"center"}
+          alignItems={"center"}
+        >
+          <Grid item>
+            <Typography
+              variant={"h1"}
+              display={"flex"}
+              flexDirection={{ xs: "column", lg: "row" }}
+              textAlign={"center"}
+              sx={{ fontSize: { xs: "36px", lg: "4rem" } }}
+              marginTop={{ xs: "32px", lg: "0px" }}
+            >
+              Sistem Pendukung Keputusan
+            </Typography>
           </Grid>
-          <Grid item xs={12} lg={4}>
-            <Grid container spacing={3}>
-              <Grid item xs={12}>
-                <YearlyBreakup />
-              </Grid>
-              <Grid item xs={12}>
-                <MonthlyEarnings />
-              </Grid>
-            </Grid>
+          <Grid item sx={{ marginTop: "20px" }}>
+            <Image alt="" src={EmployeeImage} width={250} height={250} />
           </Grid>
-          <Grid item xs={12} lg={4}>
-            <RecentTransactions />
-          </Grid>
-          <Grid item xs={12} lg={8}>
-            <ProductPerformance />
-          </Grid>
-          <Grid item xs={12}>
-            <Blog />
+          <Grid item>
+            <Typography
+              variant={"h1"}
+              display={"flex"}
+              flexDirection={{ xs: "column", lg: "row" }}
+              textAlign={"center"}
+              sx={{ fontSize: { xs: "36px", lg: "3rem" }, fontWeight: 400 }}
+              marginTop={{ xs: "32px", lg: "0px" }}
+            >
+              Evaluasi Karyawan dengan Metode Topsis
+            </Typography>
           </Grid>
         </Grid>
       </Box>
     </PageContainer>
-  )
-}
+  );
+};
 
 export default Dashboard;

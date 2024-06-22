@@ -1,11 +1,5 @@
 "use client";
-import {
-  Box,
-  Button,
-  Grid,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Box, Button, Grid, TextField, Typography } from "@mui/material";
 import PageContainer from "@/app/(DashboardLayout)/components/container/PageContainer";
 import DashboardCard from "@/app/(DashboardLayout)/components/shared/DashboardCard";
 import { useEffect, useState } from "react";
@@ -22,6 +16,7 @@ import {
 import ModalFeedback from "@/components/modal/ModalFeedback";
 import ModalConfirm from "@/components/modal/ModalConfirm";
 import { IconTrash } from "@tabler/icons-react";
+import Paginations from "@/components/custom-table/Pagination";
 
 const Karyawan = () => {
   const headCells = [
@@ -76,6 +71,9 @@ const Karyawan = () => {
   const [itemIdToDelete, setItemIdToDelete] = useState("");
   const [keyword, setKeyword] = useState("");
 
+  const [totalPage, setTotalPage] = useState(1);
+  const [page, setPage] = useState(1);
+
   useEffect(() => {
     if (!isLoading) {
       dispatch(fetchListKaryawan({ page: 1, limit: 10 }));
@@ -85,6 +83,7 @@ const Karyawan = () => {
   useEffect(() => {
     if (listKaryawan) {
       setData(listKaryawan?.items);
+      setTotalPage(listKaryawan?.meta?.totalPages);
     }
   }, [listKaryawan]);
 
@@ -94,8 +93,14 @@ const Karyawan = () => {
 
   const handleKeyword = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter") {
+      setPage(1);
       dispatch(fetchListKaryawan({ keyword: keyword, page: 1, limit: 10 }));
     }
+  };
+
+  const handleChangePage = (event: any, newPage: number) => {
+    setPage(newPage);
+    dispatch(fetchListKaryawan({ page: newPage }));
   };
 
   const handleAddKaryawan = (payload: any) => {
@@ -112,6 +117,7 @@ const Karyawan = () => {
 
   const addKaryawanSukses = () => {
     setIsOpenModal("");
+    setPage(1);
     dispatch(fetchListKaryawan({ page: 1, limit: 10 }));
   };
 
@@ -146,6 +152,7 @@ const Karyawan = () => {
 
   const removeKaryawanSukses = () => {
     setIsOpenModal("");
+    setPage(1);
     dispatch(fetchListKaryawan({ page: 1, limit: 10 }));
   };
 
@@ -205,6 +212,13 @@ const Karyawan = () => {
               includeDetail={false}
               onDelete={handleDeleteKaryawan}
             />
+            {data?.length >= 1 && (
+              <Paginations
+                count={totalPage}
+                page={page}
+                handleChange={handleChangePage}
+              />
+            )}
           </Box>
           <DrawerKaryawan
             isOpen={isOpenDrawer}

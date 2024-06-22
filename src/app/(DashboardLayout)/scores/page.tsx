@@ -21,6 +21,7 @@ import ModalDetailScore from "@/components/modal/ModalDetailScore";
 import ModalEditScore from "@/components/modal/ModalEditScore";
 import { IconTrash } from "@tabler/icons-react";
 import ModalConfirm from "@/components/modal/ModalConfirm";
+import Paginations from "@/components/custom-table/Pagination";
 
 const Scores = () => {
   const headCells = [
@@ -58,6 +59,9 @@ const Scores = () => {
   const [listEmployees, setListEmployees] = useState([]);
   const [listCriterion, setListCriterion] = useState([]);
 
+  const [page, setPage] = useState(1);
+  const [totalPage, setTotalPage] = useState(1);
+
   useEffect(() => {
     if (!isLoading) {
       dispatch(fetchListScore({ page: 1, limit: 20 }));
@@ -67,6 +71,7 @@ const Scores = () => {
   useEffect(() => {
     if (listScore) {
       setData(listScore?.items);
+      setTotalPage(listScore?.meta?.totalPages);
     }
   }, [listScore]);
 
@@ -96,8 +101,14 @@ const Scores = () => {
 
   const handleKeyword = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter") {
-      console.log(keyword);
+      setPage(1);
+      dispatch(fetchListScore({ keyword: keyword, page: 1, limit: 10 }));
     }
+  };
+
+  const handleChangePage = (event: any, newPage: number) => {
+    setPage(newPage);
+    dispatch(fetchListScore({ page: newPage, limit: 10 }));
   };
 
   const closeModal = () => {
@@ -130,6 +141,7 @@ const Scores = () => {
 
   const addScoreSukses = () => {
     setIsOpenModal("");
+    setPage(1);
     dispatch(fetchListScore({ page: 1, limit: 20 }));
   };
 
@@ -171,6 +183,7 @@ const Scores = () => {
 
   const removeScoreSuccess = () => {
     setIsOpenModal("");
+    setPage(1);
     dispatch(fetchListScore({ page: 1, limit: 10 }));
   };
 
@@ -201,7 +214,7 @@ const Scores = () => {
                   sx={{ mr: 2 }}
                   color="error"
                   onClick={() => setIsOpenModal("reset")}
-                  disabled={data.length === 0 ? true : false}
+                  disabled={data?.length === 0 ? true : false}
                 >
                   <IconTrash />
                   <Typography>Reset</Typography>
@@ -227,6 +240,13 @@ const Scores = () => {
               onDelete={handleDeleteScore}
               selectedData={handleSelectedData}
             />
+            {data?.length >= 1 && (
+              <Paginations
+                count={totalPage}
+                page={page}
+                handleChange={handleChangePage}
+              />
+            )}
           </Box>
           {isOpenModal === "open" &&
             (typeModal === "detail" ? (

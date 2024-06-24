@@ -5,6 +5,7 @@ import { karyawanReducer } from "./karyawan";
 import { scoreReducer } from "./score";
 import { topsisReducer } from "./topsis";
 import { authReducer } from "./auth";
+import { userReducer } from "./user";
 
 const reducers = combineReducers({
   globalReducer,
@@ -13,6 +14,7 @@ const reducers = combineReducers({
   scoreReducer,
   topsisReducer,
   authReducer,
+  userReducer,
 });
 
 export default reducers;

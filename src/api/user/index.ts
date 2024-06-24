@@ -10,3 +10,5 @@ export const updateUser = (id: string, payload: any) =>
 
 export const updateStatus = (id: string, payload: any) =>
   api.put(`/user/status/${id}`, payload);
+
+export const addUser = (payload: any) => api.post("/auth/register", payload);

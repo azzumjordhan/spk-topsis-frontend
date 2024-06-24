@@ -4,3 +4,4 @@ export * from "./karyawan";
 export * from "./score";
 export * from "./topsis";
 export * from "./auth";
+export * from "./user";

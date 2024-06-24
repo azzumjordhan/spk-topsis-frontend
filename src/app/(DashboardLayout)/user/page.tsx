@@ -141,27 +141,27 @@ const User = () => {
             onSubmit={handleAddUser}
           />
           {/*
-          {postKaryawan?.statusCode === 201 ? (
+          {postUser?.statusCode === 201 ? (
             <ModalFeedback
-              title={"Karyawan Added Successfully"}
+              title={"Admin Added Successfully"}
               isOpen={isOpenModal === "alert"}
               typeFeedback={"success"}
-              onClose={addKaryawanSukses}
-              onClick={addKaryawanSukses}
+              onClose={addAdminSukses}
+              onClick={addAdminSukses}
             >
-              Success !! Karyawan is added.
+              Success !! Admin is added.
             </ModalFeedback>
           ) : (
             <ModalFeedback
-              title={"Failure Karyawan Added"}
+              title={"Failure Admin Added"}
               isOpen={isOpenModal === "alert"}
               typeFeedback={"success"}
               onClick={() => setIsOpenModal("")}
               onClose={() => setIsOpenModal("")}
-              errorCode={postKaryawan?.httpStatusCode}
-              errorMessage={postKaryawan?.message}
+              errorCode={postUser?.httpStatusCode}
+              errorMessage={postUser?.message}
             >
-              Failure !! Karyawan are not added.
+              Failure !! Admin are not added.
             </ModalFeedback>
           )} */}
         </Box>

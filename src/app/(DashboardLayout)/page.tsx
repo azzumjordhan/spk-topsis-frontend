@@ -34,7 +34,7 @@ const Dashboard = () => {
             </Typography>
           </Grid>
           <Grid item sx={{ marginTop: "20px" }}>
-            <Image alt="" src={EmployeeImage} width={250} height={250} />
+            <Image alt="" src={EmployeeImage} width={250} height={250} priority />
           </Grid>
           <Grid item>
             <Typography

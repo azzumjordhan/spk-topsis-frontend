@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Typography, styled } from "@mui/material";
+import { styled } from "@mui/material";
 import Image from "next/image";
 
 const LinkStyled = styled(Link)(() => ({
@@ -12,8 +12,7 @@ const LinkStyled = styled(Link)(() => ({
 const Logo = () => {
   return (
     <LinkStyled href="/">
-      {/* <Image src="/images/logos/dark-logo.svg" alt="logo" height={70} width={174} priority /> */}
-      <Typography>TOPSIS</Typography>
+      <Image src="/images/logos/Topsis-Logo.svg" alt="logo" height={70} width={174} priority />
     </LinkStyled>
   );
 };

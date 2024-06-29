@@ -6,10 +6,11 @@ import DashboardCard from "../components/shared/DashboardCard";
 import { AppDispatch } from "@/redux/store";
 import { useDispatch, useSelector } from "react-redux";
 import React, { useEffect, useState } from "react";
-import { fetchListUser } from "@/redux/action";
+import { createUser, fetchListUser } from "@/redux/action";
 import CustomTable from "@/components/custom-table/CustomTable";
 import Paginations from "@/components/custom-table/Pagination";
 import DrawerUser from "@/components/drawer/DrawerUser";
+import ModalFeedback from "@/components/modal/ModalFeedback";
 
 const User = () => {
   const headCells = [
@@ -48,7 +49,7 @@ const User = () => {
   const [page, setPage] = useState(1);
 
   const { isLoading } = useSelector((state: any) => state.globalReducer);
-  const { listUser } = useSelector((state: any) => state.userReducer);
+  const { listUser, postUser } = useSelector((state: any) => state.userReducer);
 
   const [isOpenDrawer, setIsOpenDrawer] = useState(false);
   const [isOpenModal, setIsOpenModal] = useState("");
@@ -79,7 +80,21 @@ const User = () => {
   };
 
   const handleAddUser = (payload: any) => {
-    console.log(payload);
+    dispatch(createUser(payload)).then((response) => {
+      console.log(response);
+      if (response.statusCode === 201 && response.data != null) {
+        setIsOpenDrawer(false);
+        setIsOpenModal("alert");
+      } else {
+        setIsOpenModal("alert");
+      }
+    });
+  };
+
+  const addAdminSukses = () => {
+    setIsOpenModal("");
+    setPage(1);
+    dispatch(fetchListUser({ page: 1, limit: 10 }));
   };
 
   return (
@@ -140,7 +155,6 @@ const User = () => {
             onClose={() => setIsOpenDrawer(false)}
             onSubmit={handleAddUser}
           />
-          {/*
           {postUser?.statusCode === 201 ? (
             <ModalFeedback
               title={"Admin Added Successfully"}
@@ -163,7 +177,7 @@ const User = () => {
             >
               Failure !! Admin are not added.
             </ModalFeedback>
-          )} */}
+          )}
         </Box>
       </DashboardCard>
     </PageContainer>

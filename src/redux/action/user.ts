@@ -14,8 +14,8 @@ export const createUser = (payload: any) => async (dispatch: any) => {
   try {
     const response = await addUser(payload);
     dispatch(setLoading(false));
-    dispatch({ type: "POST_USER_SUCCESS", value: response?.data?.data });
-    return response?.data?.data;
+    dispatch({ type: "POST_USER_SUCCESS", value: response?.data });
+    return response?.data;
   } catch (error: any) {
     dispatch(setLoading(false));
     const data = error?.response?.data;

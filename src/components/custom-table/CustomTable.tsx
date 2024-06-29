@@ -1,6 +1,7 @@
 import Loading from "@/app/loading";
 import {
   Box,
+  Chip,
   IconButton,
   Paper,
   Table,
@@ -122,6 +123,24 @@ const CustomTable = (props: TableProps) => {
                           >
                             <IconTrash />
                           </IconButton>
+                        </TableCell>
+                      );
+                    } else if (e.id === "status") {
+                      return (
+                        <TableCell key={e.id}>
+                          <Chip
+                            size="small"
+                            sx={{
+                              backgroundColor:
+                                row[e.id] === "aktif" ? "#00FF00" : "#DC143C",
+                              color: "white",
+                              borderRadius: "15px",
+                              fontWeight: "medium",
+                              fontSize: "12px",
+                              textTransform: "capitalize",
+                            }}
+                            label={row[e.id]}
+                          />
                         </TableCell>
                       );
                     }

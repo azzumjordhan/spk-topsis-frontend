@@ -3,12 +3,19 @@ import {
   Box,
   Button,
   Drawer,
+  FormControl,
   Grid,
+  IconButton,
+  InputAdornment,
+  InputLabel,
+  MenuItem,
+  Select,
   TextField,
   Typography,
 } from "@mui/material";
 import ModalConfirm from "../modal/ModalConfirm";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { IconEye, IconEyeOff } from "@tabler/icons-react";
 
 const drawerWidth = 350;
 
@@ -27,17 +34,33 @@ interface UserData {
 }
 
 const DrawerUser = ({ isOpen, onClose, onSubmit }: Props) => {
-  const [user, setUser] = useState<UserData>({
+  const defaultUserState: UserData = {
     name: "",
     email: "",
     password: "",
     role: "",
     status: "",
-  });
+  };
+
+  const [user, setUser] = useState<UserData>(defaultUserState);
+
+  useEffect(() => {
+    if (isOpen) {
+      setUser(defaultUserState);
+    }
+  }, [isOpen]);
 
   const [isOpenModal, setIsOpenModal] = useState(false);
 
-  const handleSubmit = () => {};
+  const [showPassword, setShowPassword] = useState(false);
+  const handleShowPassword = () => {
+    setShowPassword((show) => !show);
+  };
+
+  const handleSubmit = () => {
+    onSubmit(user);
+    setIsOpenModal(false);
+  };
 
   return (
     <Box component="div">
@@ -97,27 +120,47 @@ const DrawerUser = ({ isOpen, onClose, onSubmit }: Props) => {
                 value={user.password}
                 onChange={(e) => setUser({ ...user, password: e.target.value })}
                 autoComplete="off"
+                type={showPassword ? "text" : "password"}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton edge="end" onClick={handleShowPassword}>
+                        {showPassword ? <IconEye /> : <IconEyeOff />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
               />
             </Grid>
             <Grid item xs={12} sx={{ mb: 2 }}>
-              <TextField
-                fullWidth
-                label="Role"
-                variant="outlined"
-                value={user.role}
-                onChange={(e) => setUser({ ...user, role: e.target.value })}
-                autoComplete="off"
-              />
+              <FormControl fullWidth>
+                <InputLabel id="dropdown-select-role">Role</InputLabel>
+                <Select
+                  labelId="dropdown-select-role"
+                  id="select-role"
+                  label="Role"
+                  value={user.role}
+                  onChange={(e) => setUser({ ...user, role: e.target.value })}
+                >
+                  <MenuItem value={"admin"}>Admin</MenuItem>
+                  <MenuItem value={"super_admin"}>Super Admin</MenuItem>
+                </Select>
+              </FormControl>
             </Grid>
             <Grid item xs={12} sx={{ mb: 2 }}>
-              <TextField
-                fullWidth
-                label="Status"
-                variant="outlined"
-                value={user.status}
-                onChange={(e) => setUser({ ...user, status: e.target.value })}
-                autoComplete="off"
-              />
+              <FormControl fullWidth>
+                <InputLabel id="dropdown-select-status">Status</InputLabel>
+                <Select
+                  labelId="dropdown-select-status"
+                  id="select-status"
+                  label="Status"
+                  value={user.status}
+                  onChange={(e) => setUser({ ...user, status: e.target.value })}
+                >
+                  <MenuItem value={"aktif"}>Aktif</MenuItem>
+                  <MenuItem value={"tidak_aktif"}>Tidak Aktif</MenuItem>
+                </Select>
+              </FormControl>
             </Grid>
             <Grid item xs={12}>
               <Button

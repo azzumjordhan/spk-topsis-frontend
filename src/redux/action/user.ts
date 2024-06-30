@@ -60,8 +60,8 @@ export const editUser = (id: string, payload: any) => async (dispatch: any) => {
   try {
     const response = await updateUser(id, payload);
     dispatch(setLoading(false));
-    dispatch({ type: "PUT_USER_SUCCESS", value: response?.data?.data });
-    return response?.data?.data;
+    dispatch({ type: "PUT_USER_SUCCESS", value: response?.data });
+    return response?.data;
   } catch (error: any) {
     dispatch(setLoading(false));
     const data = error?.response?.data;
@@ -80,9 +80,9 @@ export const editStatusUser =
       dispatch(setLoading(false));
       dispatch({
         type: "PUT_STATUS_USER_SUCCESS",
-        value: response?.data?.data,
+        value: response?.data,
       });
-      return response?.data?.data;
+      return response?.data;
     } catch (error: any) {
       dispatch(setLoading(false));
       const data = error?.response?.data;

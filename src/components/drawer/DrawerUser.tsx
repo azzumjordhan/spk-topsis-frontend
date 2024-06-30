@@ -16,13 +16,19 @@ import {
 import ModalConfirm from "../modal/ModalConfirm";
 import { useEffect, useState } from "react";
 import { IconEye, IconEyeOff } from "@tabler/icons-react";
+import { AppDispatch } from "@/redux/store";
+import { useDispatch } from "react-redux";
+import { fetchDetailUser } from "@/redux/action";
+import { localStorageMixins } from "@/mixins/localStorage.mixin";
 
 const drawerWidth = 350;
 
 interface Props {
   isOpen: boolean;
+  type: string;
   onClose: () => void;
   onSubmit: (payload: any) => void;
+  selectedData?: string;
 }
 
 interface UserData {
@@ -33,7 +39,15 @@ interface UserData {
   status: string;
 }
 
-const DrawerUser = ({ isOpen, onClose, onSubmit }: Props) => {
+const DrawerUser = ({
+  isOpen,
+  type,
+  onClose,
+  onSubmit,
+  selectedData,
+}: Props) => {
+  const dispatch: AppDispatch = useDispatch();
+
   const defaultUserState: UserData = {
     name: "",
     email: "",
@@ -44,11 +58,10 @@ const DrawerUser = ({ isOpen, onClose, onSubmit }: Props) => {
 
   const [user, setUser] = useState<UserData>(defaultUserState);
 
-  useEffect(() => {
-    if (isOpen) {
-      setUser(defaultUserState);
-    }
-  }, [isOpen]);
+  const userData = localStorageMixins.get("profile");
+  const userLoggedIn: UserData = userData
+    ? JSON.parse(userData)
+    : { defaultUserState };
 
   const [isOpenModal, setIsOpenModal] = useState(false);
 
@@ -56,6 +69,26 @@ const DrawerUser = ({ isOpen, onClose, onSubmit }: Props) => {
   const handleShowPassword = () => {
     setShowPassword((show) => !show);
   };
+
+  useEffect(() => {
+    if (!isOpen) {
+      setUser(defaultUserState);
+    }
+  }, [isOpen]);
+
+  useEffect(() => {
+    if (isOpen && selectedData && type !== "add") {
+      dispatch(fetchDetailUser(selectedData)).then((response) => {
+        setUser({
+          name: response?.name,
+          email: response?.email,
+          password: "",
+          role: response?.role,
+          status: response?.status,
+        });
+      });
+    }
+  }, [selectedData, isOpen]);
 
   const handleSubmit = () => {
     onSubmit(user);
@@ -88,50 +121,60 @@ const DrawerUser = ({ isOpen, onClose, onSubmit }: Props) => {
             <CloseOutlined />
           </Button>
           <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-            <Typography fontWeight="bold">Tambah Admin</Typography>
+            <Typography fontWeight="bold">
+              {type === "add" ? "Tambah" : "Edit"} Admin
+            </Typography>
           </Box>
           <Grid container spacing={2} sx={{ mt: 2, pl: 2, pr: 2 }}>
-            <Grid item xs={12} sx={{ mb: 2 }}>
-              <TextField
-                fullWidth
-                label="Nama"
-                variant="outlined"
-                value={user.name}
-                onChange={(e) => setUser({ ...user, name: e.target.value })}
-                autoComplete="off"
-              />
-            </Grid>
-            <Grid item xs={12} sx={{ mb: 2 }}>
-              <TextField
-                fullWidth
-                type="email"
-                label="Email"
-                variant="outlined"
-                value={user.email}
-                onChange={(e) => setUser({ ...user, email: e.target.value })}
-                autoComplete="off"
-              />
-            </Grid>
-            <Grid item xs={12} sx={{ mb: 2 }}>
-              <TextField
-                fullWidth
-                label="Password"
-                variant="outlined"
-                value={user.password}
-                onChange={(e) => setUser({ ...user, password: e.target.value })}
-                autoComplete="off"
-                type={showPassword ? "text" : "password"}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton edge="end" onClick={handleShowPassword}>
-                        {showPassword ? <IconEye /> : <IconEyeOff />}
-                      </IconButton>
-                    </InputAdornment>
-                  ),
-                }}
-              />
-            </Grid>
+            {type === "add" && (
+              <Grid item xs={12} sx={{ mb: 2 }}>
+                <TextField
+                  fullWidth
+                  label="Nama"
+                  variant="outlined"
+                  value={user.name}
+                  onChange={(e) => setUser({ ...user, name: e.target.value })}
+                  autoComplete="off"
+                />
+              </Grid>
+            )}
+            {type === "add" && (
+              <Grid item xs={12} sx={{ mb: 2 }}>
+                <TextField
+                  fullWidth
+                  type="email"
+                  label="Email"
+                  variant="outlined"
+                  value={user.email}
+                  onChange={(e) => setUser({ ...user, email: e.target.value })}
+                  autoComplete="off"
+                />
+              </Grid>
+            )}
+            {type === "add" && (
+              <Grid item xs={12} sx={{ mb: 2 }}>
+                <TextField
+                  fullWidth
+                  label="Password"
+                  variant="outlined"
+                  value={user.password}
+                  onChange={(e) =>
+                    setUser({ ...user, password: e.target.value })
+                  }
+                  autoComplete="off"
+                  type={showPassword ? "text" : "password"}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton edge="end" onClick={handleShowPassword}>
+                          {showPassword ? <IconEye /> : <IconEyeOff />}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              </Grid>
+            )}
             <Grid item xs={12} sx={{ mb: 2 }}>
               <FormControl fullWidth>
                 <InputLabel id="dropdown-select-role">Role</InputLabel>
@@ -168,10 +211,22 @@ const DrawerUser = ({ isOpen, onClose, onSubmit }: Props) => {
                 variant="contained"
                 color="primary"
                 onClick={() => setIsOpenModal(true)}
+                disabled={
+                  type !== "add" && userLoggedIn?.role !== "super_admin"
+                    ? true
+                    : false
+                }
               >
                 Simpan
               </Button>
             </Grid>
+            {type !== "add" && userLoggedIn?.role !== "super_admin" && (
+              <Grid item xs={12} sx={{ marginTop: "10px" }}>
+                <Typography sx={{ color: "red", fontSize: "12px" }}>
+                  *note : Your role is not super admin, so you cant edit
+                </Typography>
+              </Grid>
+            )}
           </Grid>
         </Box>
       </Drawer>

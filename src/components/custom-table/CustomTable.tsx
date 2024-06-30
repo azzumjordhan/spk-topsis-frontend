@@ -12,7 +12,7 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
-import { IconEye, IconTrash } from "@tabler/icons-react";
+import { IconEdit, IconEye, IconTrash } from "@tabler/icons-react";
 import { ReactElement } from "react";
 import { useSelector } from "react-redux";
 import TableBlank from "./TableBlank";
@@ -139,8 +139,28 @@ const CustomTable = (props: TableProps) => {
                               fontSize: "12px",
                               textTransform: "capitalize",
                             }}
-                            label={row[e.id]}
+                            label={
+                              row[e.id] === "aktif" ? "Aktif" : "Tidak Aktif"
+                            }
                           />
+                        </TableCell>
+                      );
+                    } else if (e.id === "action_admin") {
+                      return (
+                        <TableCell key={e.id}>
+                          <>
+                            <IconButton
+                              color="primary"
+                              size="small"
+                              onClick={() => {
+                                if (selectedData) {
+                                  selectedData(row.id);
+                                }
+                              }}
+                            >
+                              <IconEdit />
+                            </IconButton>
+                          </>
                         </TableCell>
                       );
                     }
@@ -161,7 +181,6 @@ const CustomTable = (props: TableProps) => {
       {isLoading ? (
         <Loading />
       ) : rows?.length === 0 ? (
-        // <Typography variant="h1">BELUM ADA DATA</Typography>
         <TableBlank text="Belum ada data..." icon={TableBlankImage} />
       ) : null}
     </Box>

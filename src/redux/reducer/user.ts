@@ -2,8 +2,8 @@ const initStateUser = {
   postUser: "",
   listUser: "",
   detailUser: "",
-  editUser: "",
-  editStatusUser: "",
+  putUser: "",
+  putStatusUser: "",
 };
 export const userReducer = (state = initStateUser, action: any) => {
   switch (action.type) {
@@ -17,16 +17,16 @@ export const userReducer = (state = initStateUser, action: any) => {
       return { ...state, detailUser: action.value };
     }
     case "PUT_USER_SUCCESS": {
-      return { ...state, editUser: action.value };
+      return { ...state, putUser: action.value };
     }
     case "PUT_USER_ERROR": {
-      return { ...state, editUser: action.value };
+      return { ...state, putUser: action.value };
     }
     case "PUT_STATUS_USER_SUCCESS": {
-      return { ...state, editUser: action.value };
+      return { ...state, putStatusUser: action.value };
     }
     case "PUT_STATUS_USER_ERROR": {
-      return { ...state, editUser: action.value };
+      return { ...state, putStatusUser: action.value };
     }
     case "POST_USER_SUCCESS": {
       return { ...state, postUser: action.value };
